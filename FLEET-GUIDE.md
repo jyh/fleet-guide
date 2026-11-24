@@ -243,7 +243,7 @@ The signer names the file and its exact version (a content hash), reads it whole
 
 ## Appendix B: practical operation on one machine (tmux, loops, keystrokes, hazards)
 
-**B.1 Layout.** One tmux server. A session (say `fleet`) with one window per seat, named as the roster's `window` column, the helm in its own window. Optionally a second session that links the windows of the seats currently working (`tmux link-window`), so the owner can watch everything in one place. **Address a pane by its id** (`%23`), found by listing: `tmux list-panes -a -F '#{pane_id} #{session_name}:#{window_name} #{pane_current_command}'`. Prove a pane exists by that list, never by a successful capture: a stale address can silently resolve to a different pane.
+**B.1 Layout.** One tmux server. A session (say `fleet`) with one window per seat, named as the roster's `window` column, the helm in its own window. Beside it, a second session that shows only the seats currently working (B.13): with more than a handful of seats this is what makes the fleet watchable at all. **Address a pane by its id** (`%23`), found by listing: `tmux list-panes -a -F '#{pane_id} #{session_name}:#{window_name} #{pane_current_command}'`. Prove a pane exists by that list, never by a successful capture: a stale address can silently resolve to a different pane.
 
 **B.2 The seat loop.** A shell script running in the seat's window, and the process tmux actually keeps: loop { read the gate's line 1; if `relight: now` (or no gate, logged loudly), read the seat's roster row (model, effort, account) and launch the agent CLI in its directory with the boot prompt; when the agent exits, record the exit code and re-read the gate; while the gate holds, sleep about 30 s and re-read }. Because the loop re-reads the roster at each launch, a roster change takes effect at the next launch, not when a session merely clears its context. Copy memory from the repository into the runtime before each launch.
 
@@ -266,6 +266,15 @@ The signer names the file and its exact version (a content hash), reads it whole
 **B.11 Small traps.** macOS has no `timeout`: run the command in the background, sleep, then kill it by pid if it is still alive. A pipeline's exit code is its last stage's (`${PIPESTATUS[0]}` for the first). A command that might print nothing writes to a file, and you read the file. An architecture shim can print success without running anything, so require the subject's own output (for example `uname -m`).
 
 **B.12 One checkout, many writers.** Seats sharing a repository checkout commit through one tool that holds a lock, commits by path, pushes, and verifies, never a bare `git commit` in the shared tree. Pull with peers' work in mind: never autostash someone else's uncommitted file.
+
+**B.13 The live view: a tab bar of only the working seats.** A session holding every seat's window is unusable once the fleet grows: most tabs are dark loops waiting on a gate. Keep a second session (say `busy`) that holds *links* to the live windows of the main session (`tmux link-window`: one window shown in two sessions, with the same window id), maintained by a small loop every 60 s or so.
+- **Membership is a rule, not an activity guess:** the helm always; any other seat only if it has no exit marker and its pane holds a live agent process (look for the agent among the descendants of the pane's pid, since it usually runs under a wrapper; for a seat on another machine, an ssh in the pane). Do not classify by the agent's spinner or status text: it changes between versions.
+- **Link what joined, unlink what left,** and keep a stable order (the helm first, then roster order), so tabs do not jump about.
+- **Address windows by id (`@12`), never by name.** A name that no longer exists can resolve to a neighbour by prefix match; an id that is gone fails loudly.
+- **The main session keeps every window,** so every watcher's address still resolves. The view is for eyes only.
+- **The owner attaches read-only:** `tmux attach -r -t busy` (with iTerm2's tmux integration, `tmux -CC attach -r -t busy` gives native tabs), so no keystroke there reaches a seat. Typing happens in the main session.
+- **Reap only what you created.** Keep a ledger of the window ids the loop itself linked, and remove only those. A window someone opened by hand inside the view is left alone and reported once. After a restart, seed the ledger only with windows that are provably links to the main session; the loop would rather leave a stale tab than kill something it cannot vouch for.
+- **A singleton with a pidfile,** a one-shot mode that prints the current set, and a check mode. The refresh is slow on purpose: it is a tab bar, not an alarm.
 
 ---
 
