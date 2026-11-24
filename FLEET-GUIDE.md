@@ -165,6 +165,20 @@ If the fleet does work that must not mix (two clients, a confidential project, p
 
 A rule is homed where the party bound by it will meet it in the ordinary course of work: the seat's boot brief, the repository's instructions file, or best of all a tool that refuses the wrong act and explains itself. A chat post, a meeting minute or a status file is a record, not a home. When you close a question, ask who is bound by the answer and what they will be reading when it applies.
 
+## 16. Model levels
+
+Most model vendors ship a family in three sizes: a fast, cheap model; a strong middle model; and a frontier model that is slower, dearer and scarcer. A fleet should use all three on purpose, by the work rather than by habit.
+
+- **Tier the task, then pick the model.** Classify every task before it starts (appendix A.7: A one step, B routine, C real design, D open research). The fast model takes A and B, the middle model up to C, the frontier model design work and anything at D, which runs only with a human watching. A helper task inherits its parent's tier. A model that meets a task above its tier stops and writes it down for a higher tier; a lower tier never gates a higher one.
+- **Give roles a steady model and a stepping-up rule.** Routine executors run on the fast or middle model. The duty officer runs on the middle model: its work is checks and routine acts, and it must be always on. The helm holds on the middle model day to day and steps up to the frontier model for the work that sets direction: the daily council, a design freeze, an ask to the owner. Statements, specifications and anything a later build will trust get the frontier model, because the statement is the expensive artifact and a proof or a build of the wrong statement is waste.
+- **Put the model and the effort level in the roster**, one cell each, read by the seat loop at every launch. A setting typed by hand into one session is lost at its next restart, and a seat born tomorrow inherits whatever the default is.
+- **Read a strong model's work with a different reader.** A non-author read is best done by a fresh session, and better still by a different model, so the reader does not share the author's blind spots. A design freeze gets a refuter pass (several readers, each with a named way to try to break it) before cheaper models build on it.
+- **Check which model actually ran.** A runtime can quietly substitute a default for a model name it does not recognise. Read the model the session itself reports (its transcript or log), not the flag you passed.
+- **Mind the window when switching.** Models in one family can have very different context windows. Switching a long session to a model with a smaller window can force an immediate compaction, so read the context gauge first and switch only when the session fits; otherwise start a fresh session on the new model.
+- **Know what is fixed at launch.** In many runtimes the account (and so the quota pool) is fixed when the session starts, while the model can be changed inside it. A move between accounts therefore needs a restart, and a model switch may not.
+- **Budget the frontier tier separately.** Quotas are often per pool and sometimes per model, and the frontier model's allowance runs out first. Plan its use per day with a reserve, and route work that does not need it elsewhere.
+- **Don't answer pricing, limits or model names from memory.** They change; read the vendor's current documentation or the runtime's own report.
+
 ---
 
 *What this guide does not include: any tool's code (each is described above so a team can build its own); any account, machine or quota detail; any campaign's results.*
